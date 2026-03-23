@@ -1,0 +1,147 @@
+{
+  "agentId": "testclaude",
+  "type": "specialist",
+  "name": "TestClaude QA Specialist",
+  "description": "测试与质量保障专家 Agent",
+  "version": "1.0.0",
+  
+  "capabilities": [
+    "test_execution",
+    "quality_assurance",
+    "ci_cd",
+    "code_review",
+    "report_generation",
+    "performance_analysis",
+    "coverage_tracking"
+  ],
+  
+  "parent": "orchestrator",
+  
+  "communication": {
+    "pattern": "hierarchical",
+    "channels": ["direct", "broadcast", "heartbeat"],
+    "timeout": 30000,
+    "retry": {
+      "maxAttempts": 3,
+      "backoff": "exponential"
+    }
+  },
+  
+  "resources": {
+    "maxConcurrent": 5,
+    "memory": "512MB",
+    "cpu": 2,
+    "disk": "1GB"
+  },
+  
+  "tools": [
+    {
+      "name": "exec",
+      "description": "执行 shell 命令",
+      "permissions": ["read", "write", "network"]
+    },
+    {
+      "name": "read",
+      "description": "读取文件",
+      "permissions": ["read"]
+    },
+    {
+      "name": "write",
+      "description": "写入文件",
+      "permissions": ["write"]
+    },
+    {
+      "name": "edit",
+      "description": "编辑文件",
+      "permissions": ["write"]
+    },
+    {
+      "name": "gh",
+      "description": "GitHub CLI",
+      "permissions": ["network"]
+    },
+    {
+      "name": "feishu_doc",
+      "description": "飞书文档操作",
+      "permissions": ["network"]
+    }
+  ],
+  
+  "scripts": [
+    {
+      "path": "scripts/test-all-fixes.sh",
+      "description": "运行所有测试",
+      "timeout": 300
+    },
+    {
+      "path": "scripts/test-monitor.sh",
+      "description": "监控测试执行",
+      "timeout": 600
+    },
+    {
+      "path": "scripts/review-pr.sh",
+      "description": "PR 代码审查",
+      "timeout": 120
+    },
+    {
+      "path": "scripts/notify.sh",
+      "description": "发送通知",
+      "timeout": 30
+    }
+  ],
+  
+  "workflows": [
+    {
+      "name": "pr_review",
+      "steps": [
+        {"action": "fetch_pr", "agent": "github-assistant"},
+        {"action": "code_analysis", "agent": "reviewer"},
+        {"action": "security_scan", "agent": "reviewer"},
+        {"action": "test_check", "agent": "qa-agent"},
+        {"action": "generate_report", "agent": "orchestrator"},
+        {"action": "post_comment", "agent": "github-assistant"}
+      ]
+    },
+    {
+      "name": "test_execution",
+      "steps": [
+        {"action": "unit_tests", "agent": "qa-agent", "parallel": true},
+        {"action": "integration_tests", "agent": "qa-agent", "parallel": true},
+        {"action": "performance_tests", "agent": "testclaude", "parallel": true},
+        {"action": "aggregate_results", "agent": "orchestrator"},
+        {"action": "notify", "agent": "feishu-bot"}
+      ]
+    }
+  ],
+  
+  "monitoring": {
+    "heartbeat": {
+      "enabled": true,
+      "interval": 30
+    },
+    "metrics": [
+      "task_count",
+      "success_rate",
+      "avg_response_time",
+      "error_count"
+    ],
+    "alerts": [
+      {
+        "condition": "error_rate > 0.1",
+        "action": "notify_orchestrator"
+      },
+      {
+        "condition": "response_time > 30000",
+        "action": "restart_agent"
+      }
+    ]
+  },
+  
+  "logging": {
+    "level": "info",
+    "output": "logs/testclaude.log",
+    "format": "json",
+    "max_size": "100MB",
+    "max_files": 10
+  }
+}

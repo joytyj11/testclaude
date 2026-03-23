@@ -1,0 +1,199 @@
+name: "testclaude-swarm"
+version: "2.0"
+description: "TestClaude 团队多 Agent 协同拓扑"
+
+agents:
+  # 主协调者
+  - id: orchestrator
+    type: orchestrator
+    capabilities: 
+      - task_decomposition
+      - result_aggregation
+      - load_balancing
+      - error_handling
+    communication:
+      pattern: broadcast
+      channels: 
+        - task_queue
+        - event_bus
+        - heartbeat
+    resources:
+      max_concurrent: 10
+      timeout: 600
+
+  # TestClaude 测试专家
+  - id: testclaude
+    type: specialist
+    parent: orchestrator
+    capabilities:
+      - test_execution
+      - quality_assurance
+      - ci_cd
+      - code_review
+      - report_generation
+    tools:
+      - exec
+      - read
+      - write
+      - edit
+      - process
+    resources:
+      max_concurrent: 3
+      timeout: 300
+    scripts:
+      - scripts/test-all-fixes.sh
+      - scripts/test-monitor.sh
+      - scripts/test-spawn-dryrun.sh
+
+  # GitHub 代码协作专家
+  - id: github-assistant
+    type: specialist
+    parent: orchestrator
+    capabilities:
+      - pr_review
+      - issue_management
+      - code_analysis
+      - branch_management
+    tools:
+      - gh
+      - read
+      - write
+    resources:
+      max_concurrent: 5
+      timeout: 120
+    scripts:
+      - scripts/review-pr.sh
+      - scripts/create-pr.sh
+      - scripts/check-pr-status.sh
+
+  # Feishu 文档专家
+  - id: feishu-bot
+    type: specialist
+    parent: orchestrator
+    capabilities:
+      - document_processing
+      - notification
+      - knowledge_base
+      - message_broadcast
+    tools:
+      - feishu_doc
+      - feishu_wiki
+      - message
+      - feishu_chat
+    resources:
+      max_concurrent: 5
+      timeout: 60
+    scripts:
+      - scripts/notify.sh
+      - scripts/feishu-chat.sh
+
+  # Weather 数据采集节点
+  - id: weather-agent
+    type: worker
+    parent: orchestrator
+    capabilities:
+      - data_collection
+      - api_calls
+      - reporting
+      - monitoring
+    tools:
+      - web_fetch
+      - exec
+      - read
+    resources:
+      max_concurrent: 2
+      timeout: 30
+    scripts:
+      - scripts/weather.py
+
+  # QA 测试节点
+  - id: qa-agent
+    type: worker
+    parent: testclaude
+    capabilities:
+      - unit_testing
+      - integration_testing
+      - coverage_analysis
+      - bug_reporting
+    tools:
+      - exec
+      - read
+      - write
+    resources:
+      max_concurrent: 2
+      timeout: 180
+    scripts:
+      - scripts/test-all-fixes.sh
+
+  # 代码审查节点
+  - id: reviewer
+    type: worker
+    parent: github-assistant
+    capabilities:
+      - code_style_check
+      - security_scan
+      - performance_analysis
+    tools:
+      - read
+      - edit
+    resources:
+      max_concurrent: 2
+      timeout: 90
+    scripts:
+      - scripts/review-pr.sh
+
+  # 文档生成节点
+  - id: doc-generator
+    type: worker
+    parent: feishu-bot
+    capabilities:
+      - markdown_generation
+      - api_documentation
+      - changelog_update
+    tools:
+      - write
+      - edit
+      - feishu_doc
+    resources:
+      max_concurrent: 1
+      timeout: 60
+
+coordination:
+  pattern: hierarchical
+  message_queue: redis://localhost:6379
+  heartbeat_interval: 30
+  task_timeout: 300
+  retry_policy:
+    max_attempts: 3
+    backoff: exponential
+    initial_delay: 1
+
+communication:
+  channels:
+    - name: task_queue
+      type: queue
+      max_size: 1000
+    - name: event_bus
+      type: pubsub
+    - name: heartbeat
+      type: periodic
+      interval: 30
+
+monitoring:
+  metrics:
+    - task_throughput
+    - agent_utilization
+    - error_rate
+    - response_time
+  alerts:
+    - name: high_error_rate
+      condition: error_rate > 0.1
+      action: notify
+    - name: agent_timeout
+      condition: response_time > 300
+      action: restart
+
+logging:
+  level: info
+  output: logs/swarm.log
+  format: json
