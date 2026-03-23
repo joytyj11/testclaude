@@ -1,0 +1,2 @@
+=== check-agents.sh started at Thu Mar 19 11:50:49 CST 2026 ===
+ERROR: Another instance is already running, could not acquire lock after 5s

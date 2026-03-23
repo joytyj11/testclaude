@@ -1,0 +1,33 @@
+[14:04:04] === Swarm Monitor Started ===
+[14:04:04] No previous scan found, running initial scan
+[14:04:04] Running proactive work scanners...
+[14:04:04] === Proactive Work Scanner Started ===
+
+🔍 Proactive Work Scan
+━━━━━━━━━━━━━━━━━━━━━━
+[14:04:04] Running GitHub Issues scanner...
+[14:04:04] === GitHub Issues Scanner Started ===
+/home/administrator/openclaw-zero-token/.openclaw-upstream-state/swarm/scripts/scan-issues.sh: line 66: /home/administrator/openclaw-zero-token/.openclaw-upstream-state/swarm/state/scanned-issues.json: No such file or directory
+[14:04:04] WARNING: Issues scanner failed with exit code 1
+[14:04:04] Running Dependency scanner...
+[14:04:04] === Dependency Scanner Started ===
+/home/administrator/openclaw-zero-token/.openclaw-upstream-state/swarm/scripts/scan-deps.sh: line 51: /home/administrator/openclaw-zero-token/.openclaw-upstream-state/swarm/state/scanned-deps.json: No such file or directory
+[14:04:04] WARNING: Dependency scanner failed with exit code 1
+[14:04:04] Running TODO/FIXME scanner...
+[14:04:04] === TODO/FIXME Scanner Started ===
+[14:04:04] Scanning 0 repo(s): 
+[14:04:04] No TODOs/FIXMEs found
+/home/administrator/openclaw-zero-token/.openclaw-upstream-state/swarm/scripts/scan-todos.sh: line 210: /home/administrator/openclaw-zero-token/.openclaw-upstream-state/swarm/suggestions/todos.json: No such file or directory
+[14:04:04] WARNING: TODO scanner failed with exit code 1
+
+GitHub Issues:  0 actionable (0 bug, 0 enhancements)
+Dependencies:   0 updates (0 security, 0 major, 0 minor)
+TODOs/FIXMEs:  0 found (0 FIXME, 0 TODO)
+━━━━━━━━━━━━━━━━━━━━━━
+No actionable work found
+
+[14:04:04] === Scan Complete ===
+[14:04:04] ERROR: All scanners failed
+[14:04:04] WARNING: Proactive scan failed, continuing...
+./monitor.sh: line 57: /home/administrator/openclaw-zero-token/.openclaw-upstream-state/swarm/state/last-full-scan: No such file or directory
+[14:04:04] ERROR: Monitor failed at line 57

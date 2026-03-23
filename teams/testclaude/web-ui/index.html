@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang=\"zh-CN\">
+<head>
+    <meta charset=\"UTF-8\">
+    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">
+    <title>testclaude 团队监控面板</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, Helvetica, Arial, sans-serif;
+            background: #f5f5f5;
+            color: #333;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        h1 {
+            font-size: 24px;
+            margin-bottom: 5px;
+        }
+        .subtitle {
+            opacity: 0.9;
+            font-size: 14px;
+        }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .stat-label {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 5px;
+        }
+        .stat-value {
+            font-size: 32px;
+            font-weight: bold;
+            color: #333;
+        }
+        .stat-unit {
+            font-size: 14px;
+            color: #999;
+            margin-left: 5px;
+        }
+        .main-panel {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        .panel {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        .panel-header {
+            background: #f8f9fa;
+            padding: 15px 20px;
+            border-bottom: 1px solid #dee2e6;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .panel-title {
+            font-weight: 600;
+            color: #495057;
+        }
+        .panel-badge {
+            background: #6c757d;
+            color: white;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+        }
+        .panel-content {
+            padding: 20px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .task-item {
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 10px;
+            background: #f8f9fa;
+        }
+        .task-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .task-id {
+            font-family: monospace;
+            background: #e9ecef;
+            padding: 3px 6px;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+        .task-status {
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        .status-running {
+            background: #cff4fc;
+            color: #055160;
+        }
+        .status-ready {
+            background: #d1e7dd;
+            color: #0f5132;
+        }
+        .status-stuck {
+            background: #fff3cd;
+            color: #664d03;
+        }
+        .status-failed {
+            background: #f8d7da;
+            color: #842029;
+        }
+        .task-detail {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 5px;
+        }
+        .task-progress {
+            margin-top: 10px;
+            height: 4px;
+            background: #dee2e6;
+            border-radius: 2px;
+            overflow: hidden;
+        }
+        .progress-bar {
+            height: 100%;
+            background: #0d6efd;
+            width: 0%;
+        }
+        .message-item {
+            padding: 10px;
+            border-bottom: 1px solid #dee2e6;
+        }
+        .message-item:last-child {
+            border-bottom: none;
+        }
+        .message-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+            font-size: 12px;
+        }
+        .message-sender {
+            font-weight: 600;
+            color: #0d6efd;
+        }
+        .message-time {
+            color: #6c757d;
+        }
+        .message-content {
+            font-size: 14px;
+            color: #212529;
+        }
+        .message-agent {
+            display: inline-block;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 11px;
+            margin-left: 5px;
+        }
+        .agent-orchestrator {
+            background: #e7f5ff;
+            color: #0d6efd;
+        }
+        .agent-coder {
+            background: #f3e8ff;
+            color: #6f42c1;
+        }
+        .refresh-btn {
+            background: white;
+            border: 1px solid #dee2e6;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+        .refresh-btn:hover {
+            background: #f8f9fa;
+        }
+        .last-update {
+            font-size: 12px;
+            color: #6c757d;
+            margin-left: 10px;
+        }
+        .logs-panel {
+            grid-column: span 2;
+        }
+        .log-entry {
+            font-family: monospace;
+            font-size: 12px;
+            padding: 5px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        .log-time {
+            color: #6c757d;
+            margin-right: 10px;
+        }
+        .log-level {
+            display: inline-block;
+            padding: 2px 4px;
+            border-radius: 3px;
+            font-size: 10px;
+            margin-right: 10px;
+        }
+        .log-info {
+            background: #cff4fc;
+            color: #055160;
+        }
+        .log-error {
+            background: #f8d7da;
+            color: #842029;
+        }
+        .log-warn {
+            background: #fff3cd;
+            color: #664d03;
+        }
+        @media (max-width: 768px) {
+            .main-panel {
+                grid-template-columns: 1fr;
+            }
+            .logs-panel {
+                grid-column: span 1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class=\"container\">
+        <header>
+            <h1>🤖 testclaude 团队监控面板</h1>
+            <div class=\"subtitle\">实时监控任务执行状态与agent间通信</div>
+        </header>
+
+        <div class=\"stats-grid\" id=\"stats\">
+            <div class=\"stat-card\">
+                <div class=\"stat-label\">活跃任务</div>
+                <div class=\"stat-value\" id=\"active-tasks\">0</div>
+            </div>
+            <div class=\"stat-card\">
+                <div class=\"stat-label\">等待审查</div>
+                <div class=\"stat-value\" id=\"ready-tasks\">0</div>
+            </div>
+            <div class=\"stat-card\">
+                <div class=\"stat-label\">卡住任务</div>
+                <div class=\"stat-value\" id=\"stuck-tasks\">0</div>
+            </div>
+            <div class=\"stat-card\">
+                <div class=\"stat-label\">失败任务</div>
+                <div class=\"stat-value\" id=\"failed-tasks\">0</div>
+            </div>
+        </div>
+
+        <div class=\"main-panel\">
+            <div class=\"panel\">
+                <div class=\"panel-header\">
+                    <span class=\"panel-title\">📋 当前活跃任务</span>
+                    <span class=\"panel-badge\" id=\"task-count\">0</span>
+                </div>
+                <div class=\"panel-content\" id=\"task-list\">
+                    <div style=\"text-align: center; color: #999; padding: 20px;\">加载中...</div>
+                </div>
+            </div>
+
+            <div class=\"panel\">
+                <div class=\"panel-header\">
+                    <span class=\"panel-title\">💬 A2A通信记录</span>
+                    <span class=\"panel-badge\" id=\"message-count\">0</span>
+                </div>
+                <div class=\"panel-content\" id=\"message-list\">
+                    <div style=\"text-align: center; color: #999; padding: 20px;\">暂无通信记录</div>
+                </div>
+            </div>
+        </div>
+
+        <div class=\"panel logs-panel\">
+            <div class=\"panel-header\">
+                <span class=\"panel-title\">📊 任务执行日志</span>
+                <div>
+                    <span class=\"last-update\" id=\"last-update\"></span>
+                    <button class=\"refresh-btn\" onclick=\"refreshData()\">🔄 刷新</button>
+                </div>
+            </div>
+            <div class=\"panel-content\" id=\"log-list\">
+                <div style=\"text-align: center; color: #999; padding: 20px;\">加载中...</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 模拟数据存储（实际应从API获取）
+        let mockTasks = [
+            {
+                id: \"task-001\",
+                repo: \"Screenshot\",
+                branch: \"feature/improve-ui\",
+                status: \"running\",
+                progress: 75,
+                startedAt: \"2026-03-20 09:15:23\",
+                description: \"改进UI样式和视觉设计\"
+            },
+            {
+                id: \"task-002\",
+                repo: \"Screenshot\",
+                branch: \"refactor/api\",
+                status: \"ready_for_review\",
+                progress: 100,
+                startedAt: \"2026-03-20 09:10:15\",
+                description: \"优化API性能\"
+            },
+            {
+                id: \"task-003\",
+                repo: \"Screenshot\",
+                branch: \"fix/login\",
+                status: \"stuck\",
+                progress: 30,
+                startedAt: \"2026-03-20 08:55:42\",
+                description: \"修复登录超时问题\"
+            }
+        ];
+
+        let mockMessages = [
+            {
+                from: \"orchestrator\",
+                to: \"coder\",
+                time: \"09:16:23\",
+                content: \"请处理UI改进任务，提示文件：./prompts/ui-improvement.txt\"
+            },
+            {
+                from: \"coder\",
+                to: \"orchestrator\",
+                time: \"09:17:45\",
+                content: \"已开始处理UI改进任务，进度10%\"
+            },
+            {
+                from: \"coder\",
+                to: \"orchestrator\",
+                time: \"09:20:12\",
+                content: \"UI改进任务进度50%，遇到CSS兼容性问题\"
+            },
+            {
+                from: \"orchestrator\",
+                to: \"coder\",
+                time: \"09:21:30\",
+                content: \"建议使用flexbox重构，参考项目现有样式\"
+            }
+        ];
+
+        let mockLogs = [
+            { time: \"09:15:23\", level: \"info\", message: \"Task task-001 started\" },
+            { time: \"09:16:10\", level: \"info\", message: \"Prompt generated for task-001\" },
+            { time: \"09:17:45\", level: \"info\", message: \"Coding agent started for task-001\" },
+            { time: \"09:20:12\", level: \"warn\", message: \"Task-001: CSS compatibility issue detected\" },
+            { time: \"09:21:30\", level: \"info\", message: \"Orchestrator provided guidance for task-001\" }
+        ];
+
+        function updateStats() {
+            const activeTasks = mockTasks.filter(t => t.status === 'running').length;
+            const readyTasks = mockTasks.filter(t => t.status === 'ready_for_review').length;
+            const stuckTasks = mockTasks.filter(t => t.status === 'stuck').length;
+            const failedTasks = mockTasks.filter(t => t.status === 'failed').length;
+
+            document.getElementById('active-tasks').textContent = activeTasks;
+            document.getElementById('ready-tasks').textContent = readyTasks;
+            document.getElementById('stuck-tasks').textContent = stuckTasks;
+            document.getElementById('failed-tasks').textContent = failedTasks;
+            document.getElementById('task-count').textContent = mockTasks.length;
+        }
+
+        function renderTasks() {
+            const taskList = document.getElementById('task-list');
+            if (mockTasks.length === 0) {
+                taskList.innerHTML = '<div style=\"text-align: center; color: #999; padding: 20px;\">暂无活跃任务</div>';
+                return;
+            }
+
+            let html = '';
+            mockTasks.forEach(task => {
+                const statusClass = {
+                    'running': 'status-running',
+                    'ready_for_review': 'status-ready',
+                    'stuck': 'status-stuck',
+                    'failed': 'status-failed'
+                }[task.status] || '';
+
+                const statusText = {
+                    'running': '进行中',
+                    'ready_for_review': '待审查',
+                    'stuck': '卡住',
+                    'failed': '失败'
+                }[task.status] || task.status;
+
+                html += `
+                    <div class=\"task-item\">
+                        <div class=\"task-header\">
+                            <span class=\"task-id\">${task.id}</span>
+                            <span class=\"task-status ${statusClass}\">${statusText}</span>
+                        </div>
+                        <div class=\"task-detail\">📁 ${task.repo} / ${task.branch}</div>
+                        <div class=\"task-detail\">📝 ${task.description}</div>
+                        <div class=\"task-detail\">⏱️ 开始: ${task.startedAt}</div>
+                        <div class=\"task-progress\">
+                            <div class=\"progress-bar\" style=\"width: ${task.progress}%;\"></div>
+                        </div>
+                    </div>
+                `;
+            });
+            taskList.innerHTML = html;
+        }
+
+        function renderMessages() {
+            const messageList = document.getElementById('message-list');
+            document.getElementById('message-count').textContent = mockMessages.length;
+
+            if (mockMessages.length === 0) {
+                messageList.innerHTML = '<div style=\"text-align: center; color: #999; padding: 20px;\">暂无通信记录</div>';
+                return;
+            }
+
+            let html = '';
+            mockMessages.forEach(msg => {
+                const agentClass = msg.from === 'orchestrator' ? 'agent-orchestrator' : 'agent-coder';
+                const agentName = msg.from === 'orchestrator' ? '编排' : '编码';
+
+                html += `
+                    <div class=\"message-item\">
+                        <div class=\"message-header\">
+                            <span>
+                                <span class=\"message-sender\">${msg.from}</span>
+                                <span class=\"message-agent ${agentClass}\">${agentName}</span>
+                                <span style=\"color: #999; margin: 0 5px;\">→</span>
+                                <span>${msg.to}</span>
+                            </span>
+                            <span class=\"message-time\">${msg.time}</span>
+                        </div>
+                        <div class=\"message-content\">${msg.content}</div>
+                    </div>
+                `;
+            });
+            messageList.innerHTML = html;
+        }
+
+        function renderLogs() {
+            const logList = document.getElementById('log-list');
+            if (mockLogs.length === 0) {
+                logList.innerHTML = '<div style=\"text-align: center; color: #999; padding: 20px;\">暂无日志</div>';
+                return;
+            }
+
+            let html = '';
+            mockLogs.forEach(log => {
+                const levelClass = {
+                    'info': 'log-info',
+                    'warn': 'log-warn',
+                    'error': 'log-error'
+                }[log.level] || '';
+
+                html += `
+                    <div class=\"log-entry\">
+                        <span class=\"log-time\">${log.time}</span>
+                        <span class=\"log-level ${levelClass}\">${log.level}</span>
+                        <span>${log.message}</span>
+                    </div>
+                `;
+            });
+            logList.innerHTML = html;
+        }
+
+        function updateLastUpdateTime() {
+            const now = new Date();
+            const timeStr = now.toLocaleTimeString('zh-CN', { hour12: false });
+            document.getElementById('last-update').textContent = `最后更新: ${timeStr}`;
+        }
+
+        function refreshData() {
+            // 这里可以添加实际的API调用
+            // 目前使用模拟数据
+            updateStats();
+            renderTasks();
+            renderMessages();
+            renderLogs();
+            updateLastUpdateTime();
+        }
+
+        // 初始渲染
+        refreshData();
+
+        // 自动刷新（每30秒）
+        setInterval(refreshData, 30000);
+
+        // 模拟实时消息更新
+        setInterval(() => {
+            const newMsg = {
+                from: \"coder\",
+                to: \"orchestrator\",
+                time: new Date().toLocaleTimeString('zh-CN', { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' }),
+                content: \"进度更新：正在处理中...\"
+            };
+            mockMessages.push(newMsg);
+            if (mockMessages.length > 50) mockMessages.shift();
+            renderMessages();
+        }, 15000);
+    </script>
+</body>
+</html>

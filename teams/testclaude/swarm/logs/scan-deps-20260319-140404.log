@@ -1,0 +1,2 @@
+[14:04:04] === Dependency Scanner Started ===
+/home/administrator/openclaw-zero-token/.openclaw-upstream-state/swarm/scripts/scan-deps.sh: line 51: /home/administrator/openclaw-zero-token/.openclaw-upstream-state/swarm/state/scanned-deps.json: No such file or directory

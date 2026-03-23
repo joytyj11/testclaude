@@ -1,0 +1,2 @@
+=== respawn-agent.sh started at Thu Mar 19 11:46:24 CST 2026 ===
+./respawn-agent.sh: line 14: $1: unbound variable

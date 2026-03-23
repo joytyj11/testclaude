@@ -1,0 +1,19 @@
+=== spawn-agent.sh started at Thu Mar 19 15:01:37 CST 2026 ===
+Disk space available: 946.17GB
+Creating worktree from master...
+Preparing worktree (new branch 'test-annotation')
+branch 'test-annotation' set up to track 'origin/master'.
+HEAD is now at 4f50438 Add Source Link
+Prompt size: 785 bytes
+Copying prompt to worktree (file-based execution)
+Spawning Claude Code agent in tmux session: swarm-task-001
+⚠️  Could not acquire registry lock after 5s, task not added to registry
+   Task is running but won't be monitored by check-agents.sh
+✓ Agent spawned successfully
+  Worktree: /home/administrator/openclaw-zero-token/projects/Screenshot-worktrees/test-annotation
+  Session:  swarm-task-001
+  Log:      /home/administrator/openclaw-zero-token/.openclaw-upstream-state/swarm/logs/task-001.log
+  Registry: /home/administrator/openclaw-zero-token/.openclaw-upstream-state/swarm/active-tasks.json
+
+Monitor with: tmux attach -t swarm-task-001
+Check status: ~/.openclaw/swarm/scripts/check-agents.sh

@@ -1,0 +1,170 @@
+{
+  "name": "TestClaude Development Team",
+  "description": "Multi-agent development team for automated coding workflows",
+  "version": "2.0.0",
+  "agents": {
+    "orchestrator": {
+      "id": "orchestrator-agent",
+      "role": "Task Orchestrator & Project Manager",
+      "description": "负责任务分解、工作流协调、多agent调度和结果整合",
+      "config": "orchestrator-config.json",
+      "capabilities": ["task-decomposition", "workflow-coordination", "agent-spawning", "result-integration", "prompt-generation"],
+      "communication": {
+        "canSendTo": ["coding-agent", "reviewer-agent", "qa-agent", "documentation-agent", "security-agent"],
+        "canReceiveFrom": ["user", "coding-agent", "reviewer-agent", "qa-agent"]
+      }
+    },
+    "coding-agent": {
+      "id": "coding-agent",
+      "role": "Code Implementation Specialist",
+      "description": "负责具体的代码实现、重构和功能开发",
+      "config": "coding-agent-config.json",
+      "capabilities": ["code-generation", "refactoring", "testing", "bug-fixing"],
+      "communication": {
+        "canSendTo": ["orchestrator", "reviewer-agent"],
+        "canReceiveFrom": ["orchestrator", "reviewer-agent"]
+      }
+    },
+    "reviewer-agent": {
+      "id": "reviewer-agent",
+      "role": "Code Review & Quality Assurance",
+      "description": "负责代码审查、质量检查和最佳实践验证",
+      "config": "reviewer-config.json",
+      "capabilities": ["code-review", "quality-check", "best-practices", "security-scan"],
+      "communication": {
+        "canSendTo": ["orchestrator", "coding-agent"],
+        "canReceiveFrom": ["orchestrator", "coding-agent"]
+      }
+    },
+    "qa-agent": {
+      "id": "qa-agent",
+      "role": "Quality Assurance & Testing Specialist",
+      "description": "负责测试编写、测试执行和测试覆盖率验证",
+      "config": "qa-config.json",
+      "capabilities": ["test-generation", "test-execution", "coverage-analysis", "integration-testing"],
+      "communication": {
+        "canSendTo": ["orchestrator", "coding-agent"],
+        "canReceiveFrom": ["orchestrator"]
+      }
+    },
+    "documentation-agent": {
+      "id": "documentation-agent",
+      "role": "Technical Documentation Specialist",
+      "description": "负责技术文档编写、API文档生成和用户指南维护",
+      "config": "documentation-config.json",
+      "capabilities": ["doc-generation", "api-docs", "readme-updates", "comment-enhancement"],
+      "communication": {
+        "canSendTo": ["orchestrator"],
+        "canReceiveFrom": ["orchestrator", "coding-agent"]
+      }
+    },
+    "security-agent": {
+      "id": "security-agent",
+      "role": "Security & Vulnerability Analyst",
+      "description": "负责安全审计、漏洞检测和依赖安全检查",
+      "config": "security-config.json",
+      "capabilities": ["vulnerability-scanning", "dependency-check", "security-audit", "secret-detection"],
+      "communication": {
+        "canSendTo": ["orchestrator", "coding-agent"],
+        "canReceiveFrom": ["orchestrator"]
+      }
+    },
+    "devops-agent": {
+      "id": "devops-agent",
+      "role": "CI/CD & Infrastructure Specialist",
+      "description": "负责CI/CD配置、部署脚本和环境管理",
+      "config": "devops-config.json",
+      "capabilities": ["ci-cd-config", "deployment-scripts", "docker-config", "infrastructure-as-code"],
+      "communication": {
+        "canSendTo": ["orchestrator"],
+        "canReceiveFrom": ["orchestrator", "coding-agent"]
+      }
+    }
+  },
+  "workflows": {
+    "feature-development": {
+      "description": "完整的功能开发流程",
+      "steps": [
+        {"agent": "orchestrator", "action": "analyze-requirements", "output": "task-spec"},
+        {"agent": "orchestrator", "action": "decompose-tasks", "output": "subtasks"},
+        {"agent": "coding-agent", "action": "implement-feature", "output": "code-changes", "parallel": true},
+        {"agent": "qa-agent", "action": "write-tests", "output": "test-files", "parallel": true},
+        {"agent": "documentation-agent", "action": "update-docs", "output": "doc-updates", "parallel": true},
+        {"agent": "security-agent", "action": "scan-code", "output": "security-report"},
+        {"agent": "reviewer-agent", "action": "review-code", "output": "review-feedback"},
+        {"agent": "coding-agent", "action": "address-feedback", "output": "final-changes"},
+        {"agent": "qa-agent", "action": "run-tests", "output": "test-results"},
+        {"agent": "devops-agent", "action": "prepare-deployment", "output": "deployment-ready"}
+      ]
+    },
+    "bug-fix": {
+      "description": "Bug修复流程",
+      "steps": [
+        {"agent": "orchestrator", "action": "analyze-bug", "output": "root-cause"},
+        {"agent": "coding-agent", "action": "fix-bug", "output": "fix-changes"},
+        {"agent": "qa-agent", "action": "verify-fix", "output": "verification"},
+        {"agent": "reviewer-agent", "action": "review-fix", "output": "review"}
+      ]
+    },
+    "code-review": {
+      "description": "代码审查流程",
+      "steps": [
+        {"agent": "orchestrator", "action": "initiate-review", "output": "review-request"},
+        {"agent": "reviewer-agent", "action": "review-code", "output": "review-comments"},
+        {"agent": "coding-agent", "action": "address-comments", "output": "updated-code"},
+        {"agent": "qa-agent", "action": "re-test", "output": "test-results"}
+      ]
+    },
+    "ci-cd-pipeline": {
+      "description": "CI/CD 流水线流程",
+      "steps": [
+        {"agent": "devops-agent", "action": "setup-ci", "output": "ci-config"},
+        {"agent": "qa-agent", "action": "configure-tests", "output": "test-config"},
+        {"agent": "security-agent", "action": "setup-scan", "output": "security-config"},
+        {"agent": "orchestrator", "action": "monitor-pipeline", "output": "pipeline-status"}
+      ]
+    },
+    "documentation-update": {
+      "description": "文档更新流程",
+      "steps": [
+        {"agent": "orchestrator", "action": "identify-doc-needs", "output": "doc-requirements"},
+        {"agent": "documentation-agent", "action": "write-docs", "output": "doc-files"},
+        {"agent": "reviewer-agent", "action": "review-docs", "output": "doc-feedback"},
+        {"agent": "documentation-agent", "action": "update-docs", "output": "final-docs"}
+      ]
+    },
+    "security-audit": {
+      "description": "安全审计流程",
+      "steps": [
+        {"agent": "orchestrator", "action": "initiate-audit", "output": "audit-scope"},
+        {"agent": "security-agent", "action": "scan-dependencies", "output": "vulnerability-report"},
+        {"agent": "security-agent", "action": "scan-code", "output": "security-issues"},
+        {"agent": "coding-agent", "action": "fix-issues", "output": "security-fixes"},
+        {"agent": "qa-agent", "action": "verify-fixes", "output": "verification"}
+      ]
+    }
+  },
+  "communication": {
+    "protocol": "file-based",
+    "messageQueue": "swarm/messages/",
+    "taskRegistry": "swarm/active-tasks.json",
+    "notificationQueue": "swarm/notifications/pending.json"
+  },
+  "coordination": {
+    "maxParallelAgents": 5,
+    "taskTimeout": 3600,
+    "retryAttempts": 3,
+    "autoCleanup": true
+  },
+  "externalServices": {
+    "github": {
+      "webhookEnabled": true,
+      "webhookPort": 8080,
+      "ciWaitTimeout": 3600
+    },
+    "notifications": {
+      "channels": ["discord", "slack"],
+      "fallbackToQueue": true
+    }
+  }
+}

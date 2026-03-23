@@ -1,0 +1,2 @@
+[14:04:04] === GitHub Issues Scanner Started ===
+/home/administrator/openclaw-zero-token/.openclaw-upstream-state/swarm/scripts/scan-issues.sh: line 66: /home/administrator/openclaw-zero-token/.openclaw-upstream-state/swarm/state/scanned-issues.json: No such file or directory

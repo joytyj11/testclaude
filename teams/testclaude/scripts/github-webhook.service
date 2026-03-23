@@ -1,0 +1,20 @@
+[Unit]
+Description=GitHub Webhook Listener for OpenClaw TestClaude Team
+After=network.target
+
+[Service]
+Type=simple
+User=administrator
+WorkingDirectory=/home/administrator/.openclaw-zero/workspace/teams/testclaude
+Environment="GITHUB_WEBHOOK_SECRET=your-webhook-secret-here"
+Environment="DISCORD_WEBHOOK_URL="
+Environment="SLACK_WEBHOOK_URL="
+Environment="CUSTOM_WEBHOOK_URL="
+ExecStart=/home/administrator/.openclaw-zero/workspace/teams/testclaude/scripts/github-webhook-listener.sh --port 8080
+Restart=on-failure
+RestartSec=10
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target

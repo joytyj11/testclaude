@@ -1,0 +1,21 @@
+=== spawn-agent.sh started at Thu Mar 19 11:21:30 CST 2026 ===
+⚠️  Cleaning up stale worktree at /home/administrator/openclaw-zero-token/projects/Screenshot-worktrees/agent/test-minimal
+⚠️  Cleaning up stale branch agent/test-minimal
+Deleted branch agent/test-minimal (was 4f50438).
+Disk space available: 946.18GB
+Creating worktree from master...
+Preparing worktree (new branch 'agent/test-minimal')
+branch 'agent/test-minimal' set up to track 'origin/master'.
+HEAD is now at 4f50438 Add Source Link
+Prompt size: 785 bytes
+Copying prompt to worktree (file-based execution)
+Spawning Claude Code agent in tmux session: swarm-testtask
+✓ Task added to registry
+✓ Agent spawned successfully
+  Worktree: /home/administrator/openclaw-zero-token/projects/Screenshot-worktrees/agent/test-minimal
+  Session:  swarm-testtask
+  Log:      /home/administrator/openclaw-zero-token/.openclaw-upstream-state/swarm/logs/testtask.log
+  Registry: /home/administrator/openclaw-zero-token/.openclaw-upstream-state/swarm/active-tasks.json
+
+Monitor with: tmux attach -t swarm-testtask
+Check status: ~/.openclaw/swarm/scripts/check-agents.sh

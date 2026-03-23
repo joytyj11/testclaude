@@ -1,0 +1,18 @@
+=== spawn-agent.sh started at Thu Mar 19 15:54:55 CST 2026 ===
+Disk space available: 946.09GB
+Creating worktree from master...
+Preparing worktree (new branch 'feature/ui-modern-toolbar')
+branch 'feature/ui-modern-toolbar' set up to track 'origin/master'.
+HEAD is now at 4f50438 Add Source Link
+Prompt size: 531 bytes
+Copying prompt to worktree (file-based execution)
+Spawning Claude Code agent in tmux session: swarm-task-ui-toolbar
+✓ Task added to registry
+✓ Agent spawned successfully
+  Worktree: /home/administrator/openclaw-zero-token/projects/Screenshot-worktrees/feature/ui-modern-toolbar
+  Session:  swarm-task-ui-toolbar
+  Log:      /home/administrator/openclaw-zero-token/.openclaw-upstream-state/swarm/logs/task-ui-toolbar.log
+  Registry: /home/administrator/openclaw-zero-token/.openclaw-upstream-state/swarm/active-tasks.json
+
+Monitor with: tmux attach -t swarm-task-ui-toolbar
+Check status: ~/.openclaw/swarm/scripts/check-agents.sh
